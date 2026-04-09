@@ -3,6 +3,10 @@
     "api/license/**/*.ts": {
       "memory": 1024,
       "maxDuration": 10
+    },
+    "api/admin/**/*.ts": {
+      "memory": 512,
+      "maxDuration": 10
     }
   },
   "headers": [
@@ -15,11 +19,15 @@
         },
         {
           "key": "Access-Control-Allow-Methods",
-          "value": "GET, POST, OPTIONS"
+          "value": "GET, POST, PUT, PATCH, DELETE, OPTIONS"
         },
         {
           "key": "Access-Control-Allow-Headers",
-          "value": "Content-Type, Authorization"
+          "value": "Content-Type, Authorization, X-Requested-With"
+        },
+        {
+          "key": "Access-Control-Max-Age",
+          "value": "86400"
         }
       ]
     }
