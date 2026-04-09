@@ -3,6 +3,7 @@ import { VercelRequest, VercelResponse } from "@vercel/node";
 import { z } from "zod";
 import { supabaseAdmin } from "../_lib/supabase-client";
 import { verifyAdminToken } from "../_lib/auth-middleware";
+import { setupCors } from "../../_lib/cors-middleware";
 
 const ListLicensesSchema = z.object({
   userId: z.string().uuid(),
@@ -12,6 +13,9 @@ export default async function handler(
   req: VercelRequest,
   res: VercelResponse
 ) {
+  // Setup CORS
+  setupCors(req, res);
+
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Method not allowed" });
   }

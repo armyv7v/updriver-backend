@@ -4,6 +4,7 @@ import { z } from "zod";
 import { supabaseAdmin } from "./_lib/supabase-client";
 import * as bcrypt from "bcryptjs";
 import * as jwt from "jsonwebtoken";
+import { setupCors } from "../_lib/cors-middleware";
 
 const LoginSchema = z.object({
   email: z.string().email(),
@@ -14,6 +15,9 @@ export default async function handler(
   req: VercelRequest,
   res: VercelResponse
 ) {
+  // Setup CORS
+  setupCors(req, res);
+
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
