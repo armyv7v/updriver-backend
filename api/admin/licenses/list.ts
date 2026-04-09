@@ -13,8 +13,10 @@ export default async function handler(
   req: VercelRequest,
   res: VercelResponse
 ) {
-  // Setup CORS
-  setupCors(req, res);
+  // Setup CORS and handle preflight
+  if (setupCors(req, res)) {
+    return;
+  }
 
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Method not allowed" });

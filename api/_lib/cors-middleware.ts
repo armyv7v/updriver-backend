@@ -1,7 +1,7 @@
 // api/_lib/cors-middleware.ts - Middleware CORS
 import { VercelRequest, VercelResponse } from "@vercel/node";
 
-export function setupCors(req: VercelRequest, res: VercelResponse): void {
+export function setupCors(req: VercelRequest, res: VercelResponse): boolean {
   const origin = req.headers.origin || "*";
   const allowedOrigins = [
     "https://updriver-admin.vercel.app",
@@ -32,8 +32,11 @@ export function setupCors(req: VercelRequest, res: VercelResponse): void {
   res.setHeader("Access-Control-Allow-Credentials", "true");
   res.setHeader("Access-Control-Max-Age", "86400"); // 24 hours
 
-  // Handle preflight requests
+  // Handle preflight requests - return true to indicate response was sent
   if (req.method === "OPTIONS") {
-    return res.status(200).end();
+    res.status(200).end();
+    return true;
   }
+
+  return false;
 }
