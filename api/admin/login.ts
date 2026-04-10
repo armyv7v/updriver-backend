@@ -55,7 +55,7 @@ export default async function handler(
     }
 
     // Generar JWT token
-    const token = jwt.sign(
+    const token = jwt.default.sign(
       {
         sub: admin.id,
         email: admin.email,
