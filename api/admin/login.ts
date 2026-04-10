@@ -87,6 +87,7 @@ export default async function handler(
       return res.status(400).json({ error: "Validation error", details: zodError.errors });
     }
     console.error("Login error:", error);
-    res.status(500).json({ error: "Internal server error" });
+    const detail = error instanceof Error ? error.message : String(error);
+    res.status(500).json({ error: "Internal server error", detail });
   }
 }
