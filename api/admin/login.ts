@@ -1,14 +1,5 @@
 // api/admin/login.ts - Login para admin
 import { VercelRequest, VercelResponse } from "@vercel/node";
-import { z } from "zod";
-import { supabaseAdmin } from "./_lib/supabase-client";
-import * as bcrypt from "bcryptjs";
-import * as jwt from "jsonwebtoken";
-
-const LoginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
-});
 
 export default async function handler(
   req: VercelRequest,
@@ -30,6 +21,16 @@ export default async function handler(
   }
 
   try {
+    const { z } = await import("zod");
+    const { supabaseAdmin } = await import("./_lib/supabase-client");
+    const bcrypt = await import("bcryptjs");
+    const jwt = await import("jsonwebtoken");
+
+    const LoginSchema = z.object({
+      email: z.string().email(),
+      password: z.string().min(8),
+    });
+
     const body = LoginSchema.parse(req.body);
 
     // Buscar admin en base de datos
@@ -81,8 +82,9 @@ export default async function handler(
       },
     });
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return res.status(400).json({ error: "Validation error", details: error.errors });
+    if (error && typeof error === "object" && "name" in error && error.name === "ZodError") {
+      const zodError = error as { errors?: unknown };
+      return res.status(400).json({ error: "Validation error", details: zodError.errors });
     }
     console.error("Login error:", error);
     res.status(500).json({ error: "Internal server error" });
