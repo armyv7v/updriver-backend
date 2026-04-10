@@ -22,9 +22,18 @@ export default async function handler(
 
   try {
     const { z } = await import("zod");
-    const { supabaseAdmin } = await import("./_lib/supabase-client");
+    const { createClient } = await import("@supabase/supabase-js");
     const bcrypt = await import("bcryptjs");
     const jwt = await import("jsonwebtoken");
+
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (!supabaseUrl || !supabaseServiceRoleKey) {
+      return res.status(500).json({ error: "Missing Supabase env vars" });
+    }
+
+    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey);
 
     const LoginSchema = z.object({
       email: z.string().email(),
