@@ -3,7 +3,6 @@ import { VercelRequest, VercelResponse } from "@vercel/node";
 import { z } from "zod";
 import { supabaseAdmin } from "../_lib/supabase-client";
 import { verifyAdminToken } from "../_lib/auth-middleware";
-import { setupCors } from "../../_lib/cors-middleware";
 
 const CreateUserSchema = z.object({
   email: z.string().email(),
@@ -15,9 +14,9 @@ export default async function handler(
   req: VercelRequest,
   res: VercelResponse
 ) {
-  // Setup CORS and handle preflight
-  if (setupCors(req, res)) {
-    return;
+  // Handle preflight OPTIONS requests
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
   }
 
   if (req.method !== "POST") {

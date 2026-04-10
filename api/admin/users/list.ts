@@ -2,15 +2,14 @@
 import { VercelRequest, VercelResponse } from "@vercel/node";
 import { supabaseAdmin } from "../_lib/supabase-client";
 import { verifyAdminToken } from "../_lib/auth-middleware";
-import { setupCors } from "../../_lib/cors-middleware";
 
 export default async function handler(
   req: VercelRequest,
   res: VercelResponse
 ) {
-  // Setup CORS and handle preflight
-  if (setupCors(req, res)) {
-    return;
+  // Handle preflight OPTIONS requests
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
   }
 
   if (req.method !== "GET") {
